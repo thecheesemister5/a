@@ -65,13 +65,24 @@
 (function() {
   var sequence = "06182011";
   var buffer = "";
+  var consoleOpen = false;
 
   document.addEventListener("keydown", function(e) {
     buffer += e.key;
     if (buffer.length > sequence.length) buffer = buffer.slice(-sequence.length);
 
     if (buffer === sequence) {
-      if (!document.getElementById("miniConsole")) {
+      buffer = ""; // reset buffer
+
+      var existingConsole = document.getElementById("miniConsole");
+      if (existingConsole) {
+        // Console is open → close it
+        existingConsole.remove();
+        consoleOpen = false;
+      } else {
+        // Console is closed → open it
+        consoleOpen = true;
+
         var consoleDiv = document.createElement("div");
         consoleDiv.id = "miniConsole";
         consoleDiv.style.position = "fixed";
@@ -89,14 +100,12 @@
         consoleDiv.style.border = "2px solid white";
         consoleDiv.style.borderRadius = "5px";
 
-        // Output area
         var output = document.createElement("div");
         output.id = "miniConsoleOutput";
         output.style.height = "calc(100% - 30px)";
         output.style.overflowY = "auto";
         output.style.marginBottom = "5px";
 
-        // Input box
         var input = document.createElement("input");
         input.type = "text";
         input.style.width = "100%";
@@ -116,7 +125,6 @@
           if (e.key === "Enter") {
             var code = input.value;
             try {
-              // Detect CSS commands (start with style:)
               if (code.startsWith("style:")) {
                 var cssCode = code.slice(6).trim();
                 var styleTag = document.getElementById("miniConsoleStyle");
@@ -127,15 +135,11 @@
                 }
                 styleTag.innerHTML += cssCode + "\n";
                 output.innerHTML += "> " + code + "<br>Applied CSS.<br>";
-              }
-              // Detect HTML commands (start with html:)
-              else if (code.startsWith("html:")) {
+              } else if (code.startsWith("html:")) {
                 var htmlCode = code.slice(5).trim();
                 document.body.innerHTML = htmlCode + document.body.innerHTML;
                 output.innerHTML += "> " + code + "<br>HTML injected.<br>";
-              }
-              // Otherwise, treat as JS
-              else {
+              } else {
                 var result = eval(code);
                 output.innerHTML += "> " + code + "<br>" + result + "<br>";
               }
@@ -147,7 +151,6 @@
           }
         });
       }
-      buffer = "";
     }
   });
 })();
