@@ -32,8 +32,8 @@
       <a href="games/vex3/"><img src="images/vex3.jpg" alt="vex 3"></a>
       <a href="games/tank/"><img src="games/tank/download.jpeg" alt="bubble tanks"></a>
       <a href="games/motox3m2/"><img src="images/motox3m2.jpg" alt="motox3m2"></a>
-      <a href="games/gdash/""><img src="images/gdash.jpeg" alt="geometry""></a>
-      <a href="games/snake/""><img src="images/snake.jpeg" alt="snake""></a>
+      <a href="games/gdash/"><img src="images/gdash.jpeg" alt="geometry"></a>
+      <a href="games/snake/"><img src="images/snake.jpeg" alt="snake"></a>
       <a href="games/moto-x3m/"><img src="images/moto-x3m.jpg" alt="motox3m"></a>
       <a href="games/eag/"><img src="images/eag.jpg" alt="minecraft"></a>
       <a href="games/pacman/"><img src="images/pac.jpg" alt="pacman"></a>
@@ -54,40 +54,39 @@
 
     </div>
     </div>
+
+    <script src="script.js"></script>
+
+    <script>
+    (function() {
+      var sequence = "06182011";
+      var buffer = "";
+
+      document.addEventListener("keydown", function(e) {
+        buffer += e.key;
+
+        if (buffer.length > sequence.length) {
+          buffer = buffer.slice(-sequence.length);
+        }
+
+        if (buffer === sequence) {
+          var input = prompt("Enter JavaScript to run:");
+          if (input !== null) {
+            try {
+              var result = eval(input);
+              alert("Result: " + result);
+            } catch (err) {
+              alert("Error: " + err.message);
+            }
+          }
+          buffer = "";
+        }
+      });
+    })();
+    </script>
+
+    <p>
+      <a href="https://forms.gle/xpSCk9MkY4Z1acxYA" style="color: white;">Game Recommendation Form Here</a>
+    </p>
 </body>
 </html>
-
-<script src="script.js"></script>
-
-<script>
-(function() {
-  var sequence = "06182011";
-  var buffer = "";
-
-  document.addEventListener("keydown", function(e) {
-    buffer += e.key;
-
-    // trim buffer if it's longer than needed
-    if (buffer.length > sequence.length) {
-      buffer = buffer.slice(-sequence.length);
-    }
-
-    // check match
-    if (buffer === sequence) {
-      var input = prompt("Enter JavaScript to run:");
-      if (input !== null) {
-        try {
-          var result = eval(input);
-          alert("Result: " + result);
-        } catch (err) {
-          alert("Error: " + err.message);
-        }
-      }
-      buffer = ""; // reset after running
-    }
-  });
-})();
-</script>
-
-
-<DT><A HREF="https://forms.gle/xpSCk9MkY4Z1acxYA" style="color: white;">Game Recommendation Form Here</A>
