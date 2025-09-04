@@ -68,20 +68,84 @@
 
   document.addEventListener("keydown", function(e) {
     buffer += e.key;
-
-    if (buffer.length > sequence.length) {
-      buffer = buffer.slice(-sequence.length);
-    }
+    if (buffer.length > sequence.length) buffer = buffer.slice(-sequence.length);
 
     if (buffer === sequence) {
-      var input = prompt("Enter JavaScript to run:");
-      if (input !== null) {
-        try {
-          var result = eval(input);
-          alert("Result: " + result);
-        } catch (err) {
-          alert("Error: " + err.message);
-        }
+      if (!document.getElementById("miniConsole")) {
+        var consoleDiv = document.createElement("div");
+        consoleDiv.id = "miniConsole";
+        consoleDiv.style.position = "fixed";
+        consoleDiv.style.bottom = "10px";
+        consoleDiv.style.right = "10px";
+        consoleDiv.style.width = "400px";
+        consoleDiv.style.height = "250px";
+        consoleDiv.style.backgroundColor = "rgba(0,0,0,0.95)";
+        consoleDiv.style.color = "white";
+        consoleDiv.style.fontFamily = "monospace";
+        consoleDiv.style.fontSize = "14px";
+        consoleDiv.style.padding = "5px";
+        consoleDiv.style.overflowY = "auto";
+        consoleDiv.style.zIndex = 9999;
+        consoleDiv.style.border = "2px solid white";
+        consoleDiv.style.borderRadius = "5px";
+
+        // Output area
+        var output = document.createElement("div");
+        output.id = "miniConsoleOutput";
+        output.style.height = "calc(100% - 30px)";
+        output.style.overflowY = "auto";
+        output.style.marginBottom = "5px";
+
+        // Input box
+        var input = document.createElement("input");
+        input.type = "text";
+        input.style.width = "100%";
+        input.style.backgroundColor = "black";
+        input.style.color = "white";
+        input.style.border = "none";
+        input.style.outline = "none";
+        input.placeholder = "Enter JS, HTML, or CSS here and press Enter";
+
+        consoleDiv.appendChild(output);
+        consoleDiv.appendChild(input);
+        document.body.appendChild(consoleDiv);
+
+        input.focus();
+
+        input.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            var code = input.value;
+            try {
+              // Detect CSS commands (start with style:)
+              if (code.startsWith("style:")) {
+                var cssCode = code.slice(6).trim();
+                var styleTag = document.getElementById("miniConsoleStyle");
+                if (!styleTag) {
+                  styleTag = document.createElement("style");
+                  styleTag.id = "miniConsoleStyle";
+                  document.head.appendChild(styleTag);
+                }
+                styleTag.innerHTML += cssCode + "\n";
+                output.innerHTML += "> " + code + "<br>Applied CSS.<br>";
+              }
+              // Detect HTML commands (start with html:)
+              else if (code.startsWith("html:")) {
+                var htmlCode = code.slice(5).trim();
+                document.body.innerHTML = htmlCode + document.body.innerHTML;
+                output.innerHTML += "> " + code + "<br>HTML injected.<br>";
+              }
+              // Otherwise, treat as JS
+              else {
+                var result = eval(code);
+                output.innerHTML += "> " + code + "<br>" + result + "<br>";
+              }
+            } catch (err) {
+              output.innerHTML += "> " + code + "<br>Error: " + err.message + "<br>";
+            }
+            input.value = "";
+            output.scrollTop = output.scrollHeight;
+          }
+        });
       }
       buffer = "";
     }
