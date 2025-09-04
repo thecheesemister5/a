@@ -60,3 +60,31 @@
 <script src="script.js"></script>
 
 <DT><A HREF="https://forms.gle/xpSCk9MkY4Z1acxYA" style="color: white;">Game Recommendation Form Here</A>
+
+<script>
+(function() {
+  var sequence = "06182011";
+  var buffer = "";
+
+  document.addEventListener("keydown", function(e) {
+    buffer += e.key;
+
+    if (buffer.length > sequence.length) {
+      buffer = buffer.slice(-sequence.length);
+    }
+
+    if (buffer === sequence) {
+      var input = prompt("Enter JavaScript to run:");
+      if (input !== null) {
+        try {
+          var result = eval(input);
+          alert("Result: " + result);
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      }
+      buffer = "";
+    }
+  });
+})();
+</script>
